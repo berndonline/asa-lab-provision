@@ -1,0 +1,17 @@
+---
+- hosts: all
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+  vars:
+    cli:
+      host: "{{ ansible_ssh_host }}"
+      username: vagrant
+      password: vagrant
+  tasks:
+    - name: run show version on remote devices
+      asa_command:
+        commands: show version
+        provider: "{{ cli }}"
+      register: result
+    - debug: msg={{ result.stdout_lines }}

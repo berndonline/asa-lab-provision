@@ -1,0 +1,17 @@
+---
+before_script:
+    - git clone https://github.com/berndonline/asa-lab-vagrant.git
+    - cd asa-lab-vagrant/
+stages:
+    - validate ansible
+    - staging
+validate:
+    stage: validate ansible
+    script:
+        - bash ../linter.sh
+staging:
+    stage: staging
+    script:
+        - vagrant up
+        - ansible-playbook ../site.yml
+        - vagrant destroy
