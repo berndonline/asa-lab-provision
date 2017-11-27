@@ -1,0 +1,31 @@
+---
+
+- hosts: rtr-1 rtr-2
+
+  connection: local
+  user: vagrant
+  gather_facts: 'no'
+
+  tasks:
+    - name: hostname config
+      ios_system:
+        hostname: "{{ inventory_hostname }}"
+        lookup_enabled: 'no'
+
+    - name: rtr-1 interface config
+      ios_config:
+        lines:
+          - description connection asa-1 inside
+          - ip address 10.0.255.254 255.255.255.0
+        parents: Interface GigabitEthernet0/1
+        after: no shutdown
+      when: "'rtr-1' in inventory_hostname"
+
+    - name: rtr-2 interface config
+      ios_config:
+        lines:
+          - description connection asa-1 outside
+          - ip address 217.100.100.254 255.255.255.0
+        parents: Interface GigabitEthernet0/1
+        after: no shutdown
+      when: "'rtr-2' in inventory_hostname"

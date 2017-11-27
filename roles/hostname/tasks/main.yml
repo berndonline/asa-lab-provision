@@ -1,0 +1,8 @@
+---
+
+- name: set dns and hostname
+  asa_config:
+    lines:
+      - "hostname {{ hostname }}"
+      - "domain-name {{ domain_name }}"
+    match: line

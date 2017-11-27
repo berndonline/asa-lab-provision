@@ -1,0 +1,15 @@
+---
+
+- name: write interfaces config
+  asa_config:
+    src: "templates/interfaces.j2"
+  register: result
+
+- name: enable interfaces
+  asa_config:
+    parents: "interface GigabitEthernet{{ item.0 }}"
+    lines: "no shutdown"
+    match: none
+  when: result.changed
+  with_items:
+    - "{{ interfaces.items() }}"

@@ -1,0 +1,19 @@
+---
+
+hostname: asa-1
+domain_name: lab.local
+
+interfaces:
+  0/0:
+    alias: connection rtr-1 inside
+    nameif: inside
+    security_level: 100
+    address: 10.0.255.1
+    mask: 255.255.255.0
+
+  0/1:
+    alias: connection rtr-2 outside
+    nameif: outside
+    security_level: 0
+    address: 217.100.100.1
+    mask: 255.255.255.0

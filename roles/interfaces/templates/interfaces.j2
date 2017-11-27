@@ -1,0 +1,11 @@
+{% if interfaces is defined %}
+{% for port, value in interfaces.items() %}
+interface GigabitEthernet{{ port }}
+{% if 'alias' in value %}
+ description {{ value.alias }}
+{% endif %}
+ nameif {{ value.nameif }}
+ security-level {{ value.security_level }}
+ ip address {{ value.address }} {{ value.mask }}
+{% endfor %}
+{% endif %}

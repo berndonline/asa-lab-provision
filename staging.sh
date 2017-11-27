@@ -1,10 +1,14 @@
-vagrant up asa-1 --color
-exit_code=$?
-vagrant up asa-2 --color
-exit_code=$?
-sleep 5
+#!/bin/bash
+
+EXIT=0
+vagrant up --color <<< 'boot' || EXIT=$?i
+sleep 30
 export ANSIBLE_FORCE_COLOR=true
-ansible-playbook ../site.yml
-exit_code=$?
+ansible-playbook ../cisco_router_config.yml <<< 'prepare router config' || EXIT=$?
+sleep 30
+ansible-playbook ../site.yml <<< 'ansible playbook' || EXIT=$?
+sleep 60
+ansible-playbook ../asa_check_icmp.yml <<< 'connectivity check' || EXIT=$?
 vagrant destroy -f
-exit $exit_code
+echo $EXIT
+exit $EXIT
