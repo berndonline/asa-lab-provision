@@ -1,8 +1,10 @@
 #!/bin/bash
 
 EXIT=0
-vagrant up --color <<< 'boot' || EXIT=$?i
+vagrant up rtr-1 rtr-2 --color <<< 'boot' || EXIT=$?
 sleep 30
+vagrant up asa-1 --color <<< 'boot' || EXIT=$?
+sleep 40
 export ANSIBLE_FORCE_COLOR=true
 ansible-playbook ../cisco_router_config.yml <<< 'prepare router config' || EXIT=$?
 sleep 30
