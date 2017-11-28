@@ -1,0 +1,9 @@
+---
+
+- name: include nat variables
+  include_vars:
+    file: "group_vars/nat.yml"
+
+- name: create nat statements
+  asa_config:
+    src: "templates/nat.j2"

@@ -1,0 +1,6 @@
+{% if nat is defined %}
+{% for object, value in nat.items() %}
+object network {{ object }}
+ nat ({{ value.source }},{{ value.destination }}) {{ value.type }} {{ value.object }}
+{% endfor %}
+{% endif %}

@@ -1,1 +1,24 @@
 ---
+
+objects:
+  server1:
+    alias: inside host server1
+    host: 10.0.255.10
+
+  server2:
+    alias: inside host server2
+    host: 10.0.255.11
+
+  server3:
+    alias: inside host server3
+    host: 10.0.255.12
+
+  inside-subnet1:
+    alias: inside subnet1
+    subnet: 10.0.255.0
+    mask: 255.255.255.0
+
+  outside-subnet1:
+    alias: outside subnet1
+    subnet: 217.100.100.0
+    mask: 255.255.255.0

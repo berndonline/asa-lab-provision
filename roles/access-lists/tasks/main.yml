@@ -1,0 +1,21 @@
+---
+
+- name: include access-lists variables
+  include_vars:
+    file: "group_vars/access-lists.yml"
+
+- name: clear configure access-lists
+  asa_config:
+    lines:
+      - clear configure access-list {{ item.name }}
+  ignore_errors: yes
+  with_items: 
+    - "{{ access_lists }}"
+
+- name: write access-lists
+  asa_acl:
+    lines: 
+      - access-list {{ item.0.name }} extended {{ item.1 }}
+  with_subelements:
+    - "{{ access_lists }}"
+    - lines

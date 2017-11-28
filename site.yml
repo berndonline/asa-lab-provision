@@ -9,3 +9,8 @@
   roles:
     - hostname
     - interfaces
+    - routing
+    - objects
+    - object-groups
+    - access-lists
+    - nat

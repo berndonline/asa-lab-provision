@@ -1,0 +1,5 @@
+---
+
+- name: write routes
+  asa_config:
+    src: "templates/routing.j2"

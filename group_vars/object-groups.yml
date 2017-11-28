@@ -1,1 +1,14 @@
 ---
+
+object_groups:
+  inside-server:
+    alias: all inside servers
+    objects:
+      - server1
+      - server2
+      - server3
+  all-subnets:
+    alias: all inside and outside subnets
+    objects:
+      - inside-subnet1
+      - outside-subnet1

@@ -1,1 +1,16 @@
 ---
+
+access_lists:
+  - name: acl_inside
+    interface: inside
+    lines:
+      - permit icmp object inside-subnet1 any
+      - permit tcp object-group inside-server any eq www
+      - deny ip any any
+
+  - name: acl_outside
+    interface: outside
+    lines:
+      - permit icmp any object-group inside-server
+      - permit tcp any object-group inside-server eq www
+      - deny ip any any

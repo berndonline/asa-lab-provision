@@ -17,8 +17,17 @@
         lines:
           - description connection asa-1 inside
           - ip address 10.0.255.254 255.255.255.0
+          - ip address 10.0.255.10 255.255.255.0 secondary
+          - ip address 10.0.255.11 255.255.255.0 secondary
+          - ip address 10.0.255.12 255.255.255.0 secondary
         parents: Interface GigabitEthernet0/1
         after: no shutdown
+      when: "'rtr-1' in inventory_hostname"
+
+    - name: rtr-1 default route
+      ios_config:
+        lines:
+          - ip route 0.0.0.0 0.0.0.0 10.0.255.1
       when: "'rtr-1' in inventory_hostname"
 
     - name: rtr-2 interface config
@@ -27,5 +36,15 @@
           - description connection asa-1 outside
           - ip address 217.100.100.254 255.255.255.0
         parents: Interface GigabitEthernet0/1
+        after: no shutdown
+      when: "'rtr-2' in inventory_hostname"
+
+    - name: rtr-2 interface loopback config
+      ios_config:
+        lines:
+          - description loopback google dns
+          - ip address 8.8.8.8 255.255.255.255
+          - ip address 8.8.4.4 255.255.255.255 secondary
+        parents: Interface loopback0
         after: no shutdown
       when: "'rtr-2' in inventory_hostname"

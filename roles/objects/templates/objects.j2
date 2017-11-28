@@ -1,0 +1,14 @@
+{% if objects is defined %}
+{% for object, value in objects.items() %}
+object network {{ object }}
+{% if value and 'host' in value %}
+ host {{ value['host'] }}
+{% endif %}
+{% if value and 'subnet' in value %}
+ subnet {{ value['subnet'] }} {{ value['mask'] }}
+{% endif %}
+{% if 'alias' in value %}
+ description {{ value.alias }}
+{% endif %}
+{% endfor %}
+{% endif %}

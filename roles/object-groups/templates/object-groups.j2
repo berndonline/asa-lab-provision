@@ -1,0 +1,11 @@
+{% if object_groups is defined %}
+{% for object_group, value in object_groups.items() %}
+object-group network {{ object_group }}
+{% for item in value.objects %}
+ network-object object {{ item }}
+{% endfor %}
+{% if 'alias' in value %}
+ description {{ value.alias }}
+{% endif %}
+{% endfor %}
+{% endif %}

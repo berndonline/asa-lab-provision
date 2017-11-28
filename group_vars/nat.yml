@@ -1,1 +1,8 @@
 ---
+
+nat:
+  inside-subnet1:
+    source: inside
+    destination: outside
+    type: dynamic
+    object: interface

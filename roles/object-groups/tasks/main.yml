@@ -1,0 +1,9 @@
+---
+
+- name: include object-groups variables
+  include_vars:
+    file: "group_vars/object-groups.yml"
+
+- name: create object-groups
+  asa_config:
+    src: "templates/object-groups.j2"
