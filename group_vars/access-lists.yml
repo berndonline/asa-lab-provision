@@ -1,5 +1,7 @@
 ---
 
+override_acl: true
+
 access_lists:
   - name: acl_inside
     interface: inside

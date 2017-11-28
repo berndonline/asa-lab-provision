@@ -9,13 +9,22 @@
     lines:
       - clear configure access-list {{ item.name }}
   ignore_errors: yes
-  with_items: 
+  when: override_acl == true
+  with_items:
     - "{{ access_lists }}"
 
 - name: write access-lists
   asa_acl:
-    lines: 
+    lines:
       - access-list {{ item.0.name }} extended {{ item.1 }}
+  when: override_acl == true
   with_subelements:
     - "{{ access_lists }}"
     - lines
+
+- name: assign access-lists to interface
+  asa_config:
+    lines:
+      - access-group {{ item.name }} in interface {{ item.interface }}
+  with_items:
+    - "{{ access_lists }}"
