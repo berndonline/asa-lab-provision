@@ -1,0 +1,34 @@
+---
+
+- name: clear policy maps
+  asa_config:
+    lines:
+      - no service-policy global_policy global
+      - no policy-map global_policy
+  ignore_errors: yes
+
+- name: write policy-map dns_map
+  asa_config:
+    parents: ['policy-map type inspect dns dns_map', 'parameters']
+    lines:
+      - message-length maximum 1280
+      - dns-guard
+      - protocol-enforcement
+      - no nat-rewrite
+      - no id-randomization
+      - no tsig enforced
+      - no id-mismatch
+
+- name: write policy-map global_policy
+  asa_config:
+    parents: ['policy-map global_policy', 'class inspection_default']
+    lines:
+      - inspect icmp
+      - inspect icmp error
+      - inspect dns dns_map
+      - inspect ftp
+
+- name: assign service policy
+  asa_config:
+    lines:
+      - service-policy global_policy global

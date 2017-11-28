@@ -22,3 +22,13 @@
       when: "'rtr-2' in inventory_hostname"
       with_items:
         - '217.100.100.1'
+
+    - name: validate from rtr-1 to internet
+      ios_ping:
+        dest: '{{ item }}'
+        state: 'present'
+      when: "'rtr-1' in inventory_hostname"
+      with_items:
+        - '8.8.8.8'
+        - '8.8.4.4'
+        - '217.100.100.254'
