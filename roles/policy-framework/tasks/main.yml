@@ -1,34 +1,39 @@
 ---
 
+- name: include policy framework variables
+  include_vars:
+    file: "group_vars/policy-framework.yml"
+
 - name: clear policy maps
   asa_config:
     lines:
-      - no service-policy global_policy global
-      - no policy-map global_policy
+      - "{{ item }}"
+  when: override_policy_framework == true
+  with_items:
+    - "no service-policy {{ global_policy.0.name }} global"
+    - "no policy-map {{ global_policy.0.name }}"
+    - "no policy-map type inspect dns {{ dns_policy.0.name }}"
   ignore_errors: yes
 
-- name: write policy-map dns_map
+- name: write dns policy map
   asa_config:
-    parents: ['policy-map type inspect dns dns_map', 'parameters']
+    parents: ['policy-map type inspect dns {{ dns_policy.0.name }}', 'parameters']
     lines:
-      - message-length maximum 1280
-      - dns-guard
-      - protocol-enforcement
-      - no nat-rewrite
-      - no id-randomization
-      - no tsig enforced
-      - no id-mismatch
+      - "{{ item }}" 
+  with_items:
+    - "{{ dns_policy.0.lines }}"
 
 - name: write policy-map global_policy
   asa_config:
-    parents: ['policy-map global_policy', 'class inspection_default']
+    parents: ['policy-map {{ global_policy.0.name }}', 'class {{ global_policy.0.class }}']
     lines:
-      - inspect icmp
-      - inspect icmp error
-      - inspect dns dns_map
-      - inspect ftp
+      - "{{ item }}"
+  with_items:
+    - "{{ global_policy.0.lines }}"
+  register: result
 
 - name: assign service policy
   asa_config:
     lines:
-      - service-policy global_policy global
+      - service-policy {{ global_policy.0.name }} global
+  when: result.changed

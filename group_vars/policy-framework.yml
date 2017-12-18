@@ -1,0 +1,23 @@
+---
+
+override_policy_framework: false
+
+dns_policy:
+  - name: dns_map
+    lines:
+      - message-length maximum 1280
+      - dns-guard
+      - protocol-enforcement
+      - no nat-rewrite
+      - no id-randomization
+      - no tsig enforced
+      - no id-mismatch
+
+global_policy:
+  - name: global_policy
+    class: inspection_default
+    lines:
+      - inspect icmp
+      - inspect icmp error
+      - inspect dns dns_map
+      - inspect ftp

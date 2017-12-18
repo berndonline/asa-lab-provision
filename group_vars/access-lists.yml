@@ -1,6 +1,6 @@
 ---
 
-override_acl: true
+override_acl: false
 
 access_lists:
   - name: acl_inside
