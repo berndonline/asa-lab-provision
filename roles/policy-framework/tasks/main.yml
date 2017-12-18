@@ -4,16 +4,50 @@
   include_vars:
     file: "group_vars/policy-framework.yml"
 
-- name: clear policy maps
+- name: clear policy framework
   asa_config:
     lines:
       - "{{ item }}"
-  when: override_policy_framework == true
+  when: clear_policy_framework == true
   with_items:
-    - "no service-policy {{ global_policy.0.name }} global"
-    - "no policy-map {{ global_policy.0.name }}"
+    - "no service-policy global_policy global"
+    - "no policy-map global_policy"
     - "no policy-map type inspect dns {{ dns_policy.0.name }}"
   ignore_errors: yes
+
+- name: clear class maps
+  asa_config:
+    lines:
+      - "no class-map {{ item.name }}"
+  when: clear_policy_framework == true
+  ignore_errors: yes
+  with_items:
+    - "{{ class_map }}"
+
+- name: clear configure class map access-lists
+  asa_config:
+    lines:
+      - clear configure access-list {{ item.name }}
+  ignore_errors: yes
+  when: clear_policy_framework == true
+  with_items:
+    - "{{ access_lists_class_maps }}"
+
+- name: write access-lists for class maps
+  asa_acl:
+    lines:
+      - access-list {{ item.0.name }} extended {{ item.1 }}
+  with_subelements:
+    - "{{ access_lists_class_maps }}"
+    - lines
+
+- name: write class maps
+  asa_config:
+    parents: ['class-map {{ item.name }}']
+    lines:
+      - "match {{ item.match }}"
+  with_items:
+    - "{{ class_map }}"
 
 - name: write dns policy map
   asa_config:
@@ -25,15 +59,16 @@
 
 - name: write policy-map global_policy
   asa_config:
-    parents: ['policy-map {{ global_policy.0.name }}', 'class {{ global_policy.0.class }}']
+    parents: ['policy-map global_policy', 'class {{ item.0.class }}']
     lines:
-      - "{{ item }}"
-  with_items:
-    - "{{ global_policy.0.lines }}"
+      - "{{ item.1 }}"
+  with_subelements:
+    - "{{ global_policy }}"
+    - lines
   register: result
 
-- name: assign service policy
+- name: assign service global policy
   asa_config:
     lines:
-      - service-policy {{ global_policy.0.name }} global
+      - service-policy global_policy global
   when: result.changed

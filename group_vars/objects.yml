@@ -1,6 +1,10 @@
 ---
 
 objects:
+  dummy:
+    alias: dummy placeholder
+    host: 1.1.1.1
+
   server1:
     alias: inside host server1
     host: 10.0.255.10

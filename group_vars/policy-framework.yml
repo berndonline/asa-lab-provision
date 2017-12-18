@@ -1,23 +1,66 @@
 ---
 
-override_policy_framework: false
+clear_policy_framework: true
 
 dns_policy:
   - name: dns_map
     lines:
       - message-length maximum 1280
-      - dns-guard
-      - protocol-enforcement
       - no nat-rewrite
-      - no id-randomization
-      - no tsig enforced
-      - no id-mismatch
+
+access_lists_class_maps:
+  - name: acl_highweb-tcp-traffic
+    lines:
+      - permit tcp any object dummy
+
+  - name: acl_medweb-tcp-traffic
+    lines:
+      - permit tcp any object dummy
+
+  - name: acl_lowweb-tcp-traffic
+    lines:
+      - permit tcp any object dummy
+
+  - name: acl_all-tcp-traffic
+    lines:
+      - permit tcp any any
+
+class_map: 
+  - name: inspection_default
+    match: default-inspection-traffic
+
+  - name: highweb-tcp-traffic
+    match: access-list acl_highweb-tcp-traffic
+
+  - name: medweb-tcp-traffic
+    match: access-list acl_medweb-tcp-traffic
+
+  - name: lowweb-tcp-traffic
+    match: access-list acl_lowweb-tcp-traffic
+
+  - name: all-tcp-traffic
+    match: access-list acl_all-tcp-traffic
 
 global_policy:
-  - name: global_policy
-    class: inspection_default
+  - class: inspection_default
     lines:
       - inspect icmp
       - inspect icmp error
       - inspect dns dns_map
       - inspect ftp
+  - class: highweb-tcp-traffic
+    lines:
+      - set connection embryonic-conn-max 4000 per-client-max 1000 per-client-embryonic-max 100
+      - set connection timeout embryonic 0:00:10 idle 1:00:00
+  - class: medweb-tcp-traffic
+    lines:
+      - set connection embryonic-conn-max 500 per-client-max 1000 per-client-embryonic-max 100
+      - set connection timeout embryonic 0:00:10 idle 1:00:00
+  - class: lowweb-tcp-traffic
+    lines:
+      - set connection embryonic-conn-max 300 per-client-max 1000 per-client-embryonic-max 100
+      - set connection timeout embryonic 0:00:10 idle 1:00:00
+  - class: all-tcp-traffic
+    lines:
+      - set connection embryonic-conn-max 100 per-client-max 500 per-client-embryonic-max 50
+      - set connection timeout embryonic 0:00:10 idle 1:00:00
