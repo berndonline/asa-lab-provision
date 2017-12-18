@@ -13,14 +13,14 @@
     - "no service-policy global_policy global"
     - "no policy-map global_policy"
     - "no policy-map type inspect dns {{ dns_policy.0.name }}"
-  ignore_errors: yes
+  ignore_errors: 'yes'
 
 - name: clear class maps
   asa_config:
     lines:
       - "no class-map {{ item.name }}"
   when: clear_policy_framework == true
-  ignore_errors: yes
+  ignore_errors: 'yes'
   with_items:
     - "{{ class_map }}"
 
@@ -28,7 +28,7 @@
   asa_config:
     lines:
       - clear configure access-list {{ item.name }}
-  ignore_errors: yes
+  ignore_errors: 'yes'
   when: clear_policy_framework == true
   with_items:
     - "{{ access_lists_class_maps }}"
@@ -51,9 +51,10 @@
 
 - name: write dns policy map
   asa_config:
-    parents: ['policy-map type inspect dns {{ dns_policy.0.name }}', 'parameters']
+    parents: ['policy-map type inspect dns
+             {{ dns_policy.0.name }}', 'parameters']
     lines:
-      - "{{ item }}" 
+      - "{{ item }}"
   with_items:
     - "{{ dns_policy.0.lines }}"
 

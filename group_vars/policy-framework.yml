@@ -25,7 +25,7 @@ access_lists_class_maps:
     lines:
       - permit tcp any any
 
-class_map: 
+class_map:
   - name: inspection_default
     match: default-inspection-traffic
 
@@ -50,17 +50,21 @@ global_policy:
       - inspect ftp
   - class: highweb-tcp-traffic
     lines:
-      - set connection embryonic-conn-max 4000 per-client-max 1000 per-client-embryonic-max 100
+      - set connection embryonic-conn-max 4000
+        per-client-max 1000 per-client-embryonic-max 100
       - set connection timeout embryonic 0:00:10 idle 1:00:00
   - class: medweb-tcp-traffic
     lines:
-      - set connection embryonic-conn-max 500 per-client-max 1000 per-client-embryonic-max 100
+      - set connection embryonic-conn-max 500
+        per-client-max 1000 per-client-embryonic-max 100
       - set connection timeout embryonic 0:00:10 idle 1:00:00
   - class: lowweb-tcp-traffic
     lines:
-      - set connection embryonic-conn-max 300 per-client-max 1000 per-client-embryonic-max 100
+      - set connection embryonic-conn-max 300
+        per-client-max 1000 per-client-embryonic-max 100
       - set connection timeout embryonic 0:00:10 idle 1:00:00
   - class: all-tcp-traffic
     lines:
-      - set connection embryonic-conn-max 100 per-client-max 500 per-client-embryonic-max 50
+      - set connection embryonic-conn-max 100
+        per-client-max 500 per-client-embryonic-max 50
       - set connection timeout embryonic 0:00:10 idle 1:00:00

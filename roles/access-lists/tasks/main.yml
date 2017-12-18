@@ -8,7 +8,7 @@
   asa_config:
     lines:
       - clear configure access-list {{ item.name }}
-  ignore_errors: yes
+  ignore_errors: 'yes'
   when: override_acl == true
   with_items:
     - "{{ access_lists }}"
