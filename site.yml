@@ -3,7 +3,7 @@
 - hosts: asa-1
 
   connection: local
-  user: vagrant
+  user: '{{ ansible_ssh_user }}'
   gather_facts: 'no'
 
   roles:
